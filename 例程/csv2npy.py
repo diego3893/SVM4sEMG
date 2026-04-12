@@ -14,7 +14,7 @@ def dataconvert(loadfilename, savefilename):
     np.save(savefilename, data_all)
 
 if __name__ == "__main__":
-    input_dir = "../data" 
+    input_dir = "../data/label1" 
     
     csv_files = [f for f in os.listdir(input_dir) if f.endswith('.csv')]
     
