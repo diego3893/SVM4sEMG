@@ -57,6 +57,15 @@ def process_single_csv(file_path):
     return df[emg_cols].values
 
 def extract_features_from_data(emg_data):
+    # 【新增】：删除前 200 毫秒的数据
+    # 因为采样率 FS = 2000，200ms 对应的就是 200 * (2000/1000) = 400 个采样点
+    remove_points = int(200 * FS / 1000)
+    if emg_data.shape[0] > remove_points:
+        emg_data = emg_data[remove_points:, :] # 切片：只保留 200ms 之后的数据
+    else:
+        return np.array([]) # 如果整个数据还不到 200ms，直接作废
+
+    filtered_data = data_filter(emg_data)
     """滑动窗口并调用 features.py 提取特征"""
     filtered_data = data_filter(emg_data)
     

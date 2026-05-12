@@ -73,8 +73,8 @@ def process_label_directory(directory, label):
 def SVM_experiment():
     # 1. 分别处理两个标签文件夹
     # 注意：这里的路径需根据你运行脚本时的相对位置调整
-    feat0, lbl0 = process_label_directory("../data/label0", 0)
-    feat1, lbl1 = process_label_directory("../data/label1", 1)
+    feat0, lbl0 = process_label_directory("./data/label0", 0)
+    feat1, lbl1 = process_label_directory("./data/label1", 1)
     
     # 2. 合并数据
     features = []
