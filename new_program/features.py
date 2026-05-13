@@ -11,11 +11,11 @@ import time
 
 def Get_EMG_Feature(featureName, data, window=100, step=20, deadzone=1e-5):
     if featureName == "feat1":
-        f1 = feature_mav1(data, window, step)
-        f2 = feature_mavslp(data, window, step)
-        f3 = feature_zc(data, window, step, deadzone)
-        # f4 = feature_ssc(data, window, step, deadzone)
-        f5 = feature_wl(data, window, step)
+        f1 = feature_mav1(data, window, step) # 平均绝对值，反应窗口内肌肉收缩的平均力度（波的高度）
+        f2 = feature_mavslp(data, window, step) # 平均绝对值斜率，对比窗口前后半段的能量差异，捕捉发力/放松的趋势
+        f3 = feature_zc(data, window, step, deadzone) # 过零率，信号过0点的次数，反应了放点频率
+        # f4 = feature_ssc(data, window, step, deadzone) # 这个试过了，基本没影响，ssc和zc的信息重合太高了
+        f5 = feature_wl(data, window, step) # 波形长度，累计相邻采样点之间的变化梯度，是反应信号幅度和频率综合复杂度
         return np.hstack((f1, f2, f3, f5))
 
 
