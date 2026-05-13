@@ -141,10 +141,47 @@ def main():
     print(f"总窗口数 (样本量): {X.shape[0]}")
     print(f"特征维度: {X.shape[1]}")
 
+    # ==================== 请在此处插入新增代码 ====================
+    print("\n--- 提取出的特征原始数值观察（归一化前） ---")
+    # X[0] 代表第1个滑动窗口的数据
+    # 自动计算CSV数据中有几个EMG通道
+    num_channels = X.shape[1] // 4  
+    
+    # 我们仅提取第1个通道 (Channel 0) 的四个特征进行对比观察
+    mav_val = X[0, 0]                            # f1: MAV
+    mavslp_val = X[0, num_channels]              # f2: MAVSLP
+    zc_val = X[0, num_channels * 2]              # f3: ZC
+    wl_val = X[0, num_channels * 3]              # f5: WL
+
+    print(f"1. MAV    (平均绝对值) : {mav_val:12.6f}")
+    print(f"2. MAVSLP (均值斜率)   : {mavslp_val:12.6f}")
+    print(f"3. ZC     (过零率)     : {zc_val:12.6f}")
+    print(f"4. WL     (波形长度)   : {wl_val:12.6f}")
+    print("============================================\n")
+    # ==============================================================
+
     scaler = StandardScaler()
     # 归一化
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
+
+    # ==================== 请在此处插入新增代码 ====================
+    print("\n--- 提取出的特征数值观察（归一化后） ---")
+    # 此时 X_train 已经是归一化后的矩阵了。
+    # 注意：因为前面经过了 train_test_split 打乱了顺序，
+    # 这里的 X_train[0] 已经不是刚才那个 X[0] 了，但无妨，我们只看"数量级是否被拉平"
+    
+    mav_val_norm = X_train[0, 0]
+    mavslp_val_norm = X_train[0, num_channels]
+    zc_val_norm = X_train[0, num_channels * 2]
+    wl_val_norm = X_train[0, num_channels * 3]
+
+    print(f"1. MAV    (平均绝对值) : {mav_val_norm:12.6f}")
+    print(f"2. MAVSLP (均值斜率)   : {mavslp_val_norm:12.6f}")
+    print(f"3. ZC     (过零率)     : {zc_val_norm:12.6f}")
+    print(f"4. WL     (波形长度)   : {wl_val_norm:12.6f}")
+    print("============================================\n")
+    # ==============================================================
     
     # 训练 SVM 分类器
     print("\n正在训练模型，请稍候...")
