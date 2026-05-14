@@ -141,7 +141,7 @@ def main():
     print(f"总窗口数 (样本量): {X.shape[0]}")
     print(f"特征维度: {X.shape[1]}")
 
-    print("\n--- 提取出的特征原始数值观察（归一化前） ---")
+    print("\n--- 提取出的特征原始数值（归一化前） ---")
     num_channels = X.shape[1] // 4  
     
     mav_val = X[0, 0]                            # f1: MAV
@@ -160,7 +160,7 @@ def main():
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    print("\n--- 提取出的特征数值观察（归一化后） ---")
+    print("\n--- 提取出的特征数值（归一化后） ---")
     
     mav_val_norm = X_train[0, 0]
     mavslp_val_norm = X_train[0, num_channels]
