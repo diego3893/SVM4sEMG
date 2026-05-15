@@ -20,10 +20,19 @@ def data_filter(data):
 
 def data_process(filename, label):
     data = np.load(filename)
+    
+    if data.shape[0] > 400:
+        data = data[400:, :]
+    else:
+        data = data[0:0, :]
+
     filtered_data = data_filter(data)
     win_len = 100
     win_move = 20
     
+    if filtered_data.shape[0] < win_len:
+        return None, None
+        
     num_all = int((filtered_data.shape[0] - win_len) / win_move) + 1
     data_ = np.zeros((num_all, win_len, filtered_data.shape[1]))
     for i in range(num_all):
@@ -31,37 +40,34 @@ def data_process(filename, label):
     
     data_feature = []
     for i in range(num_all):
-        # 提取特征
         data_feature.append(Get_EMG_Feature("feat1", data_[i, :, :]))
     
     data_feature = np.array(data_feature)
-    # 确保特征矩阵是二维的 (样本数, 特征数)
     if data_feature.ndim > 2:
         data_feature = data_feature.squeeze()
         
     data_label = np.ones((num_all, 1)) * label
     return data_feature, data_label
 
-# 新增：批量处理文件夹中所有 npy 文件的函数
+
 def process_label_directory(directory, label):
     all_features = []
     all_labels = []
     
-    # 检查路径是否存在
     if not os.path.exists(directory):
         print(f"警告：目录 {directory} 不存在")
         return None, None
 
-    # 获取目录下所有 .npy 文件
     files = [f for f in os.listdir(directory) if f.endswith('.npy')]
     
     for f in files:
         file_path = os.path.join(directory, f)
         try:
             feat, lbl = data_process(file_path, label)
-            all_features.append(feat)
-            all_labels.append(lbl)
-            print(f"已处理: {f} (标签: {label})")
+            if feat is not None and lbl is not None:
+                all_features.append(feat)
+                all_labels.append(lbl)
+                print(f"已处理: {f} (标签: {label})")
         except Exception as e:
             print(f"处理文件 {f} 时出错: {e}")
             
@@ -71,12 +77,9 @@ def process_label_directory(directory, label):
     return np.vstack(all_features), np.vstack(all_labels)
 
 def SVM_experiment():
-    # 1. 分别处理两个标签文件夹
-    # 注意：这里的路径需根据你运行脚本时的相对位置调整
     feat0, lbl0 = process_label_directory("./data/label0", 0)
     feat1, lbl1 = process_label_directory("./data/label1", 1)
     
-    # 2. 合并数据
     features = []
     labels = []
     if feat0 is not None:
